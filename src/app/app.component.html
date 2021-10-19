@@ -1,10 +1,5 @@
-<button (click)="testMessage()">Test Slack Message</button>
 <div *ngIf="authService.afAuth.user | async as  user; else showLogin">
-  <!--
-  <button *ngIf="authService.afAuth.user"
-          (click)="logout()">
-    logout
-  </button>-->
+  <button *ngIf="init" (click)="testMessage()">Test Slack Message</button>
   <h1>Ottawa Resistence - Slack Registration</h1>
   <p *ngIf="!init">Welcome <span *ngIf="authService.user">{{this.authService.user.displayName}}!
     <span *ngIf="saved">You are already registered.</span>

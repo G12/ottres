@@ -102,7 +102,7 @@ export class AppComponent {
   remove(uid, name, logout: boolean): void {
     if (confirm('Registration for ' + name + ' ALL data will be REMOVED')) {
       this.userService.deleteIngressName(uid).then(value => {
-        this.pingSlack('All data for ' + name + ' deleted by ' + this.name);
+        this.pingSlack('All data for ' + name + ' deleted by ' + this.name, false);
         console.log(value);
         if (logout) {
           this.logout();
@@ -112,14 +112,20 @@ export class AppComponent {
   }
 
   testMessage(): void {
-    this.pingSlack('testName pin: 123TEST \n- email@test.com');
+    let msg = prompt('Enter some test text', 'Default Test Text\n OKAY');
+    msg = this.name + ' added this test message: \n - ' + msg;
+    this.pingSlack(msg, true);
   }
 
-  pingSlack(msg: string): void {
+  pingSlack(msg: string, showAlert: boolean): void {
     const text = this.formatMsg(this.slackService.timeStamp(), msg);
     console.log('TEST text[' + text + ']');
     this.slackService.getMsg(text).subscribe(value => {
-      console.log(value);
+      if (showAlert){
+        alert(JSON.stringify(value));
+      } else{
+        console.log(value);
+      }
     });
   }
 
