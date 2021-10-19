@@ -32,8 +32,8 @@ function callAPI($method, $url, $data){
     curl_close($curl);
     return $result;
 }
-$data = '{"text": "' . $msg . '"}'; // Danny   left a 1 star review for your property."}';
-$url = 'https://hooks.slack.com/services/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';
+$data = '{"text": "' . $msg . '"}';
+$url = 'https://hooks.slack.com/services/SECRET';
 $return = callAPI('POST', $url, $data);
 
 header('Content-Type: application/json; charset=utf8');
