@@ -3,4 +3,5 @@ export interface ResNameData {
   name: string;
   pin: string;
   email: string;
+  time: string;
 }

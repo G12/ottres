@@ -1,4 +1,4 @@
-<button (click)="pingSlack()">Ping Slack</button>
+<button (click)="testMessage()">Test Slack Message</button>
 <div *ngIf="authService.afAuth.user | async as  user; else showLogin">
   <!--
   <button *ngIf="authService.afAuth.user"

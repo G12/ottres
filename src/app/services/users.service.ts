@@ -29,10 +29,10 @@ export class UsersService {
     return this.firestore.collection('res_names').snapshotChanges();
   }
 
-  updateIngressName(name: string, pin: string, email: string): void {
+  updateIngressName(name: string, pin: string, email: string, time: string): void {
     this.authService.afAuth.currentUser.then(value => {
       const userUid = value.uid;
-      const resNameData: ResNameData = {userUid, name, pin, email};
+      const resNameData: ResNameData = {userUid, name, pin, email, time};
       this.firestore.doc('res_names/' + userUid).set(resNameData).catch((reason) => {
         console.log(reason);
       });

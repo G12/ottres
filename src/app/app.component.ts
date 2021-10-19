@@ -1,15 +1,14 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthService} from './services/auth.service';
 import {UsersService} from './services/users.service';
 import {SlackService} from './slack.service';
-import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent {
   title = 'ottres';
   name: string;
   email: string;
@@ -33,24 +32,21 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   constructor(public authService: AuthService,
-              private userService: UsersService,
-              private slack: SlackService) {
+              public userService: UsersService,
+              private slackService: SlackService) {
 
-  }
-
-  ngOnInit(): void {
-  }
-
-  ngAfterViewInit(): void {
   }
 
   login(): void {
+    const test = false;
     this.authService.loginWithGoogle().then((user) => {
+      if (test){
+        console.log(user);
+      }
     });
   }
 
   logout(): void {
-    // if (confirm('Log Out?')) {
       this.name = null;
       this.pin = null;
       this.confirmed = false;
@@ -59,7 +55,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.email = null;
       this.isAdmin = false;
       this.authService.logout();
-    // }
   }
 
   enterIngressName(): void {
@@ -76,8 +71,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   save(): void {
-    this.userService.updateIngressName(this.name, this.pin, this.email);
+    const t = this.slackService.timeStamp();
+    this.userService.updateIngressName(this.name, this.pin, this.email, t);
     this.saved = true;
+    const msg = this.name + ' given pin: ' + this.pin + '\n- email: ' + this.email;
+    const text = this.formatMsg(t, msg);
+    console.log('text[' + text + ']');
+    this.slackService.getMsg(text).subscribe(value => {
+      console.log(value);
+    });
   }
 
   testUid(): void {
@@ -94,13 +96,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.pin = obj.pin;
       this.confirmed = true;
       this.saved = true;
-      // alert('Registered already: ' + this.name + ' pin: ' + this.pin);
     }
   }
 
   remove(uid, name, logout: boolean): void {
     if (confirm('Registration for ' + name + ' ALL data will be REMOVED')) {
       this.userService.deleteIngressName(uid).then(value => {
+        this.pingSlack('All data for ' + name + ' deleted by ' + this.name);
         console.log(value);
         if (logout) {
           this.logout();
@@ -109,9 +111,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  pingSlack(): void {
-    this.slack.getMsg('G12mo email: twiegand@rogers.com pin: HGF67HJK').subscribe(value => {
+  testMessage(): void {
+    this.pingSlack('testName pin: 123TEST \n- email@test.com');
+  }
+
+  pingSlack(msg: string): void {
+    const text = this.formatMsg(this.slackService.timeStamp(), msg);
+    console.log('TEST text[' + text + ']');
+    this.slackService.getMsg(text).subscribe(value => {
       console.log(value);
     });
   }
+
+  // utilities
+  formatMsg(time: string, msg: string): string{
+    return 'Time: ' + time + '\n- ' + msg;
+  }
+
 }

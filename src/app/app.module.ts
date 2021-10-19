@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import {AngularFireModule} from '@angular/fire';
 import {environment} from '../environments/environment';
 import {HttpClientModule} from '@angular/common/http';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import {HttpClientModule} from '@angular/common/http';
     HttpClientModule,
   ],
   providers: [
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
